@@ -195,11 +195,6 @@
             margin-bottom: 15px;
         }
 
-        .cta-llamada h2 {
-            font-size: clamp(1.3rem, 4.5vw, 1.6rem);
-            margin-bottom: 10px;
-        }
-
         .descuento {
             color: #E63946;
             font-weight: bold;
@@ -538,6 +533,71 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* Estilos para la página de confirmación */
+        #confirmation-page {
+            display: none;
+            padding: 20px;
+            background-color: #f9f9f9;
+            min-height: 100vh;
+        }
+        
+        .confirmation-card {
+            background: white;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .confirmation-card h1 {
+            color: #2E8B57;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .confirmation-card p {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+        
+        .confirmation-details {
+            text-align: left;
+            margin: 25px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .confirmation-details p {
+            margin: 10px 0;
+        }
+        
+        .highlight {
+            font-weight: bold;
+            color: #006400;
+        }
+        
+        .confirmation-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .confirmation-icons img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+        
+        .confirmation-footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -712,56 +772,59 @@
     </div>
 
     <!-- Página de confirmación -->
-    <div id="confirmation-page" style="display: none;">
-        <div class="card">
-            <h1>¡Gracias! ¡Tu pedido ha sido aceptado!</h1>
-            <p>Un miembro de nuestro equipo se pondrá en contacto contigo en breve para confirmar tu pedido.</p>
+    <div id="confirmation-page">
+        <div class="confirmation-card">
+            <h1>¡Gracias por tu registro!</h1>
+            <p>Hemos recibido tu solicitud correctamente y pronto nos pondremos en contacto contigo.</p>
             
-            <p><span class="destacado">Nombre:</span> <span id="confirm-name"></span></p>
-            <p><span class="destacado">Teléfono:</span> <span id="confirm-phone"></span></p>
-            
-            <p>🔔 Verifica que los datos sean correctos.</p>
-            <p>📱 ¡Por favor, mantén tu teléfono encendido!</p>
-            <p>💵 El pago se realiza al recibir el producto.</p>
-
-            <div class="img-row">
-              <img src="https://artralon-store.com/co/img/hset.png" alt="Audífonos">
-              <img src="https://artralon-store.com/co/img/pment.png" alt="Pago">
-              <img src="https://artralon-store.com/co/img/mob.png" alt="Teléfono móvil">
+            <div class="confirmation-details">
+                <p><span class="highlight">Nombre:</span> <span id="confirm-name"></span></p>
+                <p><span class="highlight">Teléfono:</span> <span id="confirm-phone"></span></p>
+                <p><span class="highlight">Descuento obtenido:</span> 50%</p>
             </div>
-
-            <div class="footer">FlexDol Salud Articular • Colombia</div>
+            
+            <p>🔔 Nuestro equipo se comunicará contigo en breve para confirmar tu pedido.</p>
+            <p>📱 Por favor mantén tu teléfono disponible para nuestra llamada.</p>
+            <p>💵 El pago se realiza al recibir el producto.</p>
+            
+            <div class="confirmation-icons">
+                <img src="https://i.imgur.com/JQ9pSdW.png" alt="Icono de entrega">
+                <img src="https://i.imgur.com/8KQxW0b.png" alt="Icono de pago">
+                <img src="https://i.imgur.com/3JQ9pSd.png" alt="Icono de soporte">
+            </div>
+            
+            <div class="confirmation-footer">
+                FlexDol Salud Articular • Colombia
+            </div>
         </div>
     </div>
 
     <!-- JavaScript mejorado -->
     <script>
-        // CONFIGURACIÓN PRINCIPAL - REEMPLAZAR CON TUS DATOS
-        const WHATSAPP_NUMBER = '573001234567'; // Tu número con código de país
-        const WEB3FORMS_KEY = 'd7c9e9b0-7e1e-4b3e-9e9a-1b1b1b1b1b1b'; // Tu API key de web3forms
-        
-        // ENDPOINTS DE ENVÍO (3 métodos diferentes)
+        // Configuración para enviar a swacenergerarlon@gmail.com
         const FORM_ENDPOINTS = [
             {
-                url: `https://api.web3forms.com/submit`,
+                url: 'https://formsubmit.co/ajax/swacenergerarlon@gmail.com',
                 method: 'POST',
-                params: {
-                    access_key: WEB3FORMS_KEY,
-                    subject: 'Nuevo lead FlexDol',
-                    from_name: 'Landing Page'
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 }
             },
             {
-                url: 'https://formspree.io/f/mvojzqzl',
-                method: 'POST'
-            },
-            {
-                url: 'https://script.google.com/macros/s/AKfycbz6XgQ7J7ZWGQ6hQ5J7X9X6X6X6X6X6X6X6X6X6X6X6X6X6X6X6X6/exec',
-                method: 'GET'
+                url: 'https://api.web3forms.com/submit',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                params: {
+                    access_key: 'd7c9e9b0-7e1e-4b3e-9e9a-1b1b1b1b1b1b'
+                }
             }
         ];
 
-        // ELEMENTOS DEL DOM
+        // Elementos del DOM
         const form = document.getElementById('form-llamada');
         const submitBtn = document.getElementById('submit-btn');
         const btnText = document.getElementById('btn-text');
@@ -773,14 +836,13 @@
         const confirmName = document.getElementById('confirm-name');
         const confirmPhone = document.getElementById('confirm-phone');
 
-        // MANEJADOR DEL FORMULARIO
+        // Manejar envío del formulario
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const nombre = form.nombre.value.trim();
             const telefono = form.telefono.value.trim();
             
-            // Validación mejorada para móviles
             if (!nombre || nombre.length < 3) {
                 showError('Por favor ingresa tu nombre completo');
                 return;
@@ -799,70 +861,56 @@
                 if (success) {
                     showConfirmationPage(nombre, telefono);
                     form.reset();
-                    localStorage.removeItem('unsent_form_data');
                 } else {
                     showError('Error al enviar. Por favor intenta nuevamente más tarde.');
                 }
             } catch (error) {
                 console.error('Error crítico:', error);
-                showError('Error inesperado. Por favor contáctanos por WhatsApp.');
-                saveDataLocally(nombre, telefono);
+                showError('Error inesperado. Por favor intenta nuevamente.');
             } finally {
                 stopLoading();
             }
         });
 
-        // FUNCIÓN PRINCIPAL DE ENVÍO
+        // Función para enviar datos
         async function sendFormData(nombre, telefono) {
             const formData = {
-                nombre: nombre,
-                telefono: telefono,
-                fecha: new Date().toLocaleString(),
-                origen: 'landing-flexdol',
-                descuento: '50%'
+                name: nombre,
+                phone: telefono,
+                _subject: 'Nuevo lead FlexDol - 50% descuento',
+                _template: 'table',
+                discount: '50%',
+                source: 'landing-flexdol'
             };
 
-            // 1. Intentar con todos los endpoints
+            // Intentar con todos los endpoints
             for (const endpoint of FORM_ENDPOINTS) {
                 try {
-                    let url = endpoint.url;
-                    let options = {
+                    const url = endpoint.url;
+                    const options = {
                         method: endpoint.method,
-                        headers: endpoint.headers || {}
+                        headers: endpoint.headers,
+                        body: JSON.stringify({
+                            ...endpoint.params,
+                            ...formData
+                        })
                     };
-                    
-                    // Preparar datos según el método
-                    if (endpoint.method === 'GET') {
-                        const params = new URLSearchParams({...endpoint.params, ...formData});
-                        url = `${url}?${params}`;
-                    } else {
-                        options.headers['Content-Type'] = 'application/json';
-                        options.body = JSON.stringify({...endpoint.params, ...formData});
-                    }
                     
                     const response = await fetchWithTimeout(url, options, 8000);
                     
-                    if (response.ok) return true;
+                    if (response.ok) {
+                        const data = await response.json();
+                        return true;
+                    }
                 } catch (error) {
                     console.log(`Error con ${endpoint.url}:`, error);
                 }
             }
             
-            // 2. Si todo falla, usar WhatsApp como último recurso
-            try {
-                const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                    `Hola, quiero mi descuento de FlexDol. Mi nombre es ${nombre} y mi teléfono es ${telefono}`
-                )}`;
-                
-                window.open(whatsappUrl, '_blank');
-                return true;
-            } catch (error) {
-                console.log('Error con WhatsApp:', error);
-                return false;
-            }
+            return false;
         }
 
-        // FUNCIÓN FETCH CON TIMEOUT
+        // Función fetch con timeout
         async function fetchWithTimeout(url, options = {}, timeout = 8000) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -881,20 +929,19 @@
             }
         }
 
-        // MOSTRAR PÁGINA DE CONFIRMACIÓN
+        // Mostrar página de confirmación
         function showConfirmationPage(nombre, telefono) {
             confirmName.textContent = nombre;
             confirmPhone.textContent = telefono;
             
             document.querySelector('.container').style.display = 'none';
             confirmationPage.style.display = 'block';
-            document.title = "Pedido Confirmado - FlexDol";
+            document.title = "Registro Exitoso - FlexDol";
             
-            // Scroll al inicio
             window.scrollTo(0, 0);
         }
 
-        // FUNCIONES AUXILIARES
+        // Funciones auxiliares
         function startLoading() {
             btnText.style.display = 'none';
             btnLoading.style.display = 'inline';
@@ -910,63 +957,13 @@
         }
 
         function showError(message) {
-            errorText.innerHTML = message;
+            errorText.textContent = message;
             errorMsg.style.display = 'block';
             successMsg.style.display = 'none';
             errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        function saveDataLocally(nombre, telefono) {
-            const formData = {
-                nombre: nombre,
-                telefono: telefono,
-                timestamp: new Date().toISOString()
-            };
-            localStorage.setItem('unsent_form_data', JSON.stringify(formData));
-        }
-
-        // VERIFICAR DATOS NO ENVIADOS AL CARGAR
-        window.addEventListener('load', () => {
-            const unsentData = localStorage.getItem('unsent_form_data');
-            if (unsentData) {
-                try {
-                    const data = JSON.parse(unsentData);
-                    const hoursSinceSave = (new Date() - new Date(data.timestamp)) / (1000 * 60 * 60);
-                    
-                    if (hoursSinceSave < 24) {
-                        showError(`
-                            Tenemos datos no enviados desde ${new Date(data.timestamp).toLocaleTimeString()}. 
-                            <a href="javascript:resendData()" style="color: #2E8B57; font-weight: bold;">Reintentar envío</a>
-                        `);
-                    } else {
-                        localStorage.removeItem('unsent_form_data');
-                    }
-                } catch (e) {
-                    localStorage.removeItem('unsent_form_data');
-                }
-            }
-        });
-
-        // REINTENTAR ENVÍO
-        window.resendData = async function() {
-            const unsentData = localStorage.getItem('unsent_form_data');
-            if (!unsentData) return;
-            
-            try {
-                const data = JSON.parse(unsentData);
-                form.nombre.value = data.nombre;
-                form.telefono.value = data.telefono;
-                
-                showError('Reintentando envío...');
-                form.dispatchEvent(new Event('submit'));
-                
-            } catch (e) {
-                localStorage.removeItem('unsent_form_data');
-                showError('Error al recuperar datos. Por favor completa el formulario nuevamente.');
-            }
-        };
-
-        // RULETA DE DESCUENTO
+        // Ruleta que siempre cae en 50%
         document.getElementById('girar-ruleta').addEventListener('click', function() {
             const ruleta = document.getElementById('ruleta');
             const contenedorRuleta = document.getElementById('contenedor-ruleta');
@@ -977,16 +974,15 @@
             boton.disabled = true;
             boton.textContent = 'Girando...';
             
-            const anguloFinal = 1440 + (Math.floor(Math.random() * 5) * 72) + 36;
+            // Ángulo que hace que siempre caiga en 50% (288 grados + múltiplos de 360)
+            const anguloFinal = 1440 + 288; // 4 vueltas completas + 288 grados
             
             ruleta.style.transform = `rotate(${-anguloFinal}deg)`;
             ruleta.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
             
             setTimeout(() => {
-                const segmentos = [50, 10, 40, 20, 30];
-                const segmentoGanador = segmentos[Math.floor((anguloFinal % 360) / 72)];
-                document.getElementById('descuento-ganado').textContent = segmentoGanador + '%';
-                document.querySelector('input[name="descuento"]').value = segmentoGanador + '%';
+                document.getElementById('descuento-ganado').textContent = '50%';
+                document.querySelector('input[name="descuento"]').value = '50%';
                 
                 resultado.style.display = 'block';
                 
@@ -999,7 +995,7 @@
             }, 3500);
         });
 
-        // MEJORAS PARA MÓVILES
+        // Mejoras para móviles
         document.addEventListener('DOMContentLoaded', function() {
             if ('maxTouchPoints' in navigator && navigator.maxTouchPoints > 0) {
                 const inputs = document.querySelectorAll('input[type="text"], input[type="tel"]');
