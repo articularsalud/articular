@@ -1,4 +1,4 @@
-html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -617,9 +617,17 @@ html>
                         <p>⚠️ <strong>OFERTA POR TIEMPO LIMITADO!</strong> Solo por hoy</p>
                     </div>
 
-                    <form id="form-llamada">
-                        <input type="hidden" name="fuente" value="landing-artralon">
+                    <form id="form-llamada" action="https://formsubmit.co/swacenergerarlon@gmail.com" method="POST">
+                        <!-- Configuración de FormSubmit -->
+                        <input type="hidden" name="_subject" value="Nuevo lead FlexDol - 50% descuento">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="_next" value="https://tudominio.com/gracias.html">
                         
+                        <!-- Datos adicionales -->
+                        <input type="hidden" name="fuente" value="landing-flexdol">
+                        <input type="hidden" name="descuento" value="50%">
+                        
+                        <!-- Campos principales -->
                         <div class="input-group">
                             <label for="nombre">Nombre completo*:</label>
                             <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre completo">
@@ -714,6 +722,23 @@ html>
                 
             }, 3500);
         });
+
+        // Validación del formulario
+        document.getElementById('form-llamada').addEventListener('submit', function(e) {
+            const telefono = document.getElementById('telefono').value;
+            if (telefono.length < 7) {
+                alert('Por favor ingresa un número de teléfono válido (mínimo 7 dígitos)');
+                e.preventDefault();
+                return;
+            }
+            
+            // Mostrar mensaje de carga
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+            
+            // El formulario se enviará automáticamente a FormSubmit
+        });
     </script>
 </body>
-</html> 
+</html>
