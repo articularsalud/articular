@@ -1,3 +1,4 @@
+html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -252,34 +253,42 @@
         }
 
         /* FORMULARIO */
-        .whatsapp-button {
-            background-color: #25D366;
+        form {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto 0;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: clamp(0.95rem, 3vw, 1.05rem);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: clamp(1rem, 3.5vw, 1.1rem);
+        }
+
+        button {
+            background-color: #2E8B57;
             color: white;
-            padding: 15px 25px;
+            padding: 15px;
             border: none;
-            border-radius: 50px;
+            border-radius: 6px;
             font-size: clamp(1rem, 3.5vw, 1.1rem);
             font-weight: bold;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 10px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            text-decoration: none;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            transition: all 0.3s;
-        }
-
-        .whatsapp-button:hover {
-            background-color: #128C7E;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-        }
-
-        .whatsapp-button i {
-            font-size: 1.5em;
         }
 
         .legal {
@@ -367,12 +376,6 @@
             
             .grid-testimonios {
                 grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .whatsapp-button {
-                max-width: 300px;
-                margin-left: auto;
-                margin-right: auto;
             }
         }
 
@@ -522,8 +525,6 @@
             100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
     </style>
-    <!-- Font Awesome para el ícono de WhatsApp -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
@@ -616,12 +617,23 @@
                         <p>⚠️ <strong>OFERTA POR TIEMPO LIMITADO!</strong> Solo por hoy</p>
                     </div>
 
-                    <!-- Botón de WhatsApp -->
-                    <a href="https://wa.me/573013120190?text=¡Hola!%20Vi%20FlexDol%20y%20quiero%20aprovechar%20el%2050%%20de%20descuento" class="whatsapp-button">
-                        <i class="fab fa-whatsapp"></i> CONTACTAR POR WHATSAPP
-                    </a>
-                    
-                    <p class="legal">Al hacer clic aceptas nuestra <a href="politica-de-privacidad.html" target="_blank">Política de Privacidad</a>.</p>
+                    <form id="form-llamada">
+                        <input type="hidden" name="fuente" value="landing-artralon">
+                        
+                        <div class="input-group">
+                            <label for="nombre">Nombre completo*:</label>
+                            <input type="text" id="nombre" name="nombre" required placeholder="Tu nombre completo">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="telefono">Teléfono*:</label>
+                            <input type="tel" id="telefono" name="telefono" required placeholder="Ej: 3001234567" pattern="[0-9]{7,15}" title="Mínimo 7 dígitos">
+                        </div>
+                        
+                        <button type="submit">✅ ¡QUIERO MI 50% DE DESCUENTO!</button>
+                        
+                        <p class="legal">Al enviar aceptas nuestra <a href="politica-de-privacidad.html" target="_blank">Política de Privacidad</a>.</p>
+                    </form>
                 </div>
             </section>
 
@@ -704,4 +716,4 @@
         });
     </script>
 </body>
-</html>
+</html> 
