@@ -793,10 +793,15 @@
 
     <!-- JavaScript mejorado -->
     <script>
-        // Configuración
-        const FORM_SUBMIT_URL = 'https://formsubmit.co/ajax/swacenergerarlon@gmail.com';
-        const BACKUP_URL = 'https://api.web3forms.com/submit';
+        // Configuración mejorada
+        const FORM_ENDPOINTS = [
+            'https://formsubmit.co/ajax/swacenergerarlon@gmail.com',
+            'https://api.web3forms.com/submit',
+            'https://formspree.io/f/mvojzqzl' // Backup adicional
+        ];
+        
         const ACCESS_KEY = 'd7c9e9b0-7e1e-4b3e-9e9a-1b1b1b1b1b1b';
+        const WHATSAPP_NUMBER = '573001234567'; // Número de WhatsApp para fallback
         
         // Elementos del DOM
         const form = document.getElementById('form-llamada');
@@ -814,11 +819,16 @@
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Validación
+            // Validación mejorada
             const nombre = form.nombre.value.trim();
             const telefono = form.telefono.value.trim();
             
-            if (!nombre || !/^[\d]{7,15}$/.test(telefono)) {
+            if (!nombre || nombre.length < 3) {
+                showError('Por favor ingresa tu nombre completo');
+                return;
+            }
+            
+            if (!telefono || !/^[\d]{7,15}$/.test(telefono)) {
                 showError('Por favor ingresa un número válido (7-15 dígitos)');
                 return;
             }
@@ -826,39 +836,7 @@
             // Mostrar estado de carga
             startLoading();
             
-            try {
-                // Intentar con el método principal
-                await submitForm(FORM_SUBMIT_URL, nombre, telefono);
-                
-                // Mostrar página de confirmación
-                showConfirmationPage(nombre, telefono);
-                
-            } catch (firstError) {
-                console.log('Primer intento fallido:', firstError);
-                
-                try {
-                    // Intentar con método alternativo
-                    await submitForm(BACKUP_URL, nombre, telefono);
-                    
-                    // Mostrar página de confirmación
-                    showConfirmationPage(nombre, telefono);
-                    
-                } catch (secondError) {
-                    console.log('Segundo intento fallido:', secondError);
-                    
-                    // Mostrar error con opción para reintentar
-                    showError('Problema de conexión. <a href="javascript:location.reload()">Reintentar</a> o llámanos al 3001234567');
-                    
-                    // Guardar datos localmente para recuperación
-                    saveDataLocally(nombre, telefono);
-                }
-            } finally {
-                stopLoading();
-            }
-        });
-
-        // Función para enviar el formulario
-        async function submitForm(url, nombre, telefono) {
+            // Datos del formulario
             const formData = {
                 name: nombre,
                 phone: telefono,
@@ -870,26 +848,82 @@
                 _access_key: ACCESS_KEY
             };
             
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
+            try {
+                // Intentar con todos los endpoints hasta que uno funcione
+                await tryMultipleEndpoints(FORM_ENDPOINTS, formData);
+                
+                // Mostrar página de confirmación
+                showConfirmationPage(nombre, telefono);
+                
+                // Limpiar formulario
+                form.reset();
+                
+            } catch (error) {
+                console.error('Todos los endpoints fallaron:', error);
+                
+                // Mostrar error con opción para WhatsApp
+                showError(`
+                    Hubo un problema al enviar. 
+                    <br>Puedes contactarnos directamente por WhatsApp:
+                    <br><a href="https://wa.me/${WHATSAPP_NUMBER}?text=Hola,%20quiero%20mi%20descuento%20de%20FlexDol.%20Mi%20nombre%20es%20${encodeURIComponent(nombre)}%20y%20mi%20teléfono%20es%20${telefono}" 
+                    style="color: #25D366; font-weight: bold;">
+                    <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
+                    </a>
+                `);
+                
+                // Guardar datos localmente para recuperación
+                saveDataLocally(nombre, telefono);
+            } finally {
+                stopLoading();
+            }
+        });
+
+        // Función para intentar múltiples endpoints
+        async function tryMultipleEndpoints(endpoints, data) {
+            let lastError = null;
             
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(formData),
-                signal: controller.signal
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            for (const endpoint of endpoints) {
+                try {
+                    await submitForm(endpoint, data);
+                    return; // Si tiene éxito, salir
+                } catch (error) {
+                    lastError = error;
+                    console.log(`Falló ${endpoint}:`, error);
+                    // Continuar con el siguiente endpoint
+                }
             }
             
-            return await response.json();
+            // Si todos fallan, lanzar el último error
+            throw lastError;
+        }
+
+        // Función para enviar el formulario (genérica)
+        async function submitForm(url, data) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                clearTimeout(timeoutId);
+                throw error;
+            }
         }
 
         // Mostrar página de confirmación
@@ -905,9 +939,19 @@
             
             // Cambiar el título de la página
             document.title = "Pedido Confirmado - FlexDol";
+            
+            // Enviar evento de conversión a Google Analytics (si está configurado)
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'conversion', {
+                    'send_to': 'AW-123456789/AbCdEfGhIjKlMnOpQrStUvWx',
+                    'value': 50.00,
+                    'currency': 'COP',
+                    'transaction_id': 'flexdol-' + Date.now()
+                });
+            }
         }
 
-        // Funciones auxiliares
+        // Funciones auxiliares mejoradas
         function startLoading() {
             btnText.style.display = 'none';
             btnLoading.style.display = 'inline';
@@ -926,6 +970,9 @@
             errorText.innerHTML = message;
             errorMsg.style.display = 'block';
             successMsg.style.display = 'none';
+            
+            // Scroll suave al mensaje de error
+            errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function saveDataLocally(nombre, telefono) {
@@ -941,8 +988,21 @@
         window.addEventListener('load', () => {
             const unsentData = localStorage.getItem('unsent_form_data');
             if (unsentData) {
-                const data = JSON.parse(unsentData);
-                showError(`Tenemos datos no enviados. <a href="javascript:resendData()">Reintentar envío</a>`);
+                try {
+                    const data = JSON.parse(unsentData);
+                    const hoursSinceSave = (new Date() - new Date(data.timestamp)) / (1000 * 60 * 60);
+                    
+                    if (hoursSinceSave < 24) { // Solo mostrar si tiene menos de 24 horas
+                        showError(`
+                            Tenemos datos no enviados desde ${new Date(data.timestamp).toLocaleTimeString()}. 
+                            <a href="javascript:resendData()" style="color: #2E8B57; font-weight: bold;">Reintentar envío</a>
+                        `);
+                    } else {
+                        localStorage.removeItem('unsent_form_data');
+                    }
+                } catch (e) {
+                    localStorage.removeItem('unsent_form_data');
+                }
             }
         });
 
@@ -951,11 +1011,21 @@
             const unsentData = localStorage.getItem('unsent_form_data');
             if (!unsentData) return;
             
-            const data = JSON.parse(unsentData);
-            form.nombre.value = data.nombre;
-            form.telefono.value = data.telefono;
-            
-            form.dispatchEvent(new Event('submit'));
+            try {
+                const data = JSON.parse(unsentData);
+                form.nombre.value = data.nombre;
+                form.telefono.value = data.telefono;
+                
+                // Mostrar mensaje de que se está reintentando
+                showError('Reintentando envío...');
+                
+                // Disparar el evento submit
+                form.dispatchEvent(new Event('submit'));
+                
+            } catch (e) {
+                localStorage.removeItem('unsent_form_data');
+                showError('Error al recuperar datos. Por favor completa el formulario nuevamente.');
+            }
         };
 
         // Sistema de ruleta
@@ -969,20 +1039,47 @@
             boton.disabled = true;
             boton.textContent = 'Girando...';
             
-            const anguloFinal = 1440 + 288 - 36;
+            // Rotación más realista con parada gradual
+            const anguloFinal = 1440 + (Math.floor(Math.random() * 5) * 72) + 36;
             
             ruleta.style.transform = `rotate(${-anguloFinal}deg)`;
             ruleta.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
             
             setTimeout(() => {
+                // Determinar el descuento ganado basado en la posición final
+                const segmentos = [50, 10, 40, 20, 30];
+                const segmentoGanador = segmentos[Math.floor((anguloFinal % 360) / 72)];
+                document.getElementById('descuento-ganado').textContent = segmentoGanador + '%';
+                
+                // Actualizar el valor del descuento en el formulario
+                document.querySelector('input[name="descuento"]').value = segmentoGanador + '%';
+                
                 resultado.style.display = 'block';
                 
                 setTimeout(() => {
                     contenedorRuleta.classList.add('ruleta-oculta');
                     oferta.style.display = 'block';
+                    
+                    // Scroll suave al formulario
+                    oferta.scrollIntoView({ behavior: 'smooth' });
                 }, 1000);
                 
             }, 3500);
+        });
+
+        // Mejorar la experiencia en móviles
+        document.addEventListener('DOMContentLoaded', function() {
+            // Evitar zoom en inputs en móviles
+            if ('maxTouchPoints' in navigator && navigator.maxTouchPoints > 0) {
+                const inputs = document.querySelectorAll('input[type="text"], input[type="tel"]');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', function() {
+                        setTimeout(() => {
+                            window.scrollTo(0, this.getBoundingClientRect().top + window.pageYOffset - 100);
+                        }, 100);
+                    });
+                });
+            }
         });
     </script>
 </body>
