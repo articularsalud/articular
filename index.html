@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
     <meta name="description" content="FlexDol - Alivio natural para dolores articulares. ¡50% de descuento hoy!">
-    <meta name="google-site-verification" content="AT6ACsaV9KsPrKBOXhlMcnKKU8ZeZVino_q1zhDXvWQ" />
     <title>FlexDol - Articulaciones Sanas 100% Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -494,7 +494,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Nuevos estilos para el sistema de envío */
+        /* Estilos para el sistema de mensajes del formulario */
         .form-status {
             display: none;
             padding: 15px;
@@ -517,6 +517,28 @@
         .form-error {
             background-color: #f8d7da;
             color: #721c24;
+        }
+        
+        .form-status i {
+            margin-right: 8px;
+        }
+        
+        /* Mejoras para móviles */
+        @media (max-width: 480px) {
+            input, button {
+                padding: 14px;
+                font-size: 1rem;
+            }
+            
+            .ruleta-wrapper {
+                width: 220px;
+                height: 220px;
+            }
+            
+            .form-status {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -609,8 +631,8 @@
                         <p>⚠️ <strong>OFERTA POR TIEMPO LIMITADO!</strong> Solo por hoy</p>
                     </div>
 
-                    <!-- Formulario actualizado con sistema de envío mejorado -->
                     <form id="form-llamada">
+                        <input type="hidden" name="access_key" value="d7c9e9b0-7e1e-4b3e-9e9a-1b1b1b1b1b1b">
                         <input type="hidden" name="fuente" value="landing-flexdol">
                         <input type="hidden" name="descuento" value="50%">
                         
@@ -621,21 +643,23 @@
                         
                         <div class="input-group">
                             <label for="telefono">Teléfono*:</label>
-                            <input type="tel" id="telefono" name="telefono" required placeholder="Ej: 3001234567" pattern="[0-9]{7,15}" title="Mínimo 7 dígitos">
+                            <input type="tel" id="telefono" name="telefono" required 
+                                   placeholder="Ej: 3001234567" pattern="[0-9]{7,15}" 
+                                   title="Mínimo 7 dígitos" inputmode="numeric">
                         </div>
                         
                         <button type="submit" id="submit-btn">✅ ¡QUIERO MI 50% DE DESCUENTO!</button>
                         
                         <div id="form-loading" class="form-status form-loading">
-                            Enviando tu solicitud, por favor espera...
+                            <i class="fas fa-spinner fa-spin"></i> Enviando tu solicitud...
                         </div>
                         
                         <div id="form-success" class="form-status form-success">
-                            ¡Gracias! Hemos recibido tus datos. Te contactaremos pronto.
+                            <i class="fas fa-check-circle"></i> ¡Gracias! Te contactaremos pronto.
                         </div>
                         
                         <div id="form-error" class="form-status form-error">
-                            Ocurrió un error. Por favor intenta nuevamente.
+                            <i class="fas fa-exclamation-triangle"></i> Error al enviar. Por favor intenta nuevamente.
                         </div>
                         
                         <p class="legal">Al enviar aceptas nuestra <a href="politica-de-privacidad.html" target="_blank">Política de Privacidad</a>.</p>
@@ -687,8 +711,8 @@
         </footer>
     </div>
 
-    <!-- JavaScript para la ruleta -->
     <script>
+        // Sistema de ruleta
         document.getElementById('girar-ruleta').addEventListener('click', function() {
             const ruleta = document.getElementById('ruleta');
             const contenedorRuleta = document.getElementById('contenedor-ruleta');
@@ -715,8 +739,8 @@
             }, 3500);
         });
 
-        // Sistema de envío mejorado
-        document.getElementById('form-llamada').addEventListener('submit', function(e) {
+        // Sistema de formulario mejorado para móviles
+        document.getElementById('form-llamada').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const form = e.target;
@@ -725,62 +749,78 @@
             const success = document.getElementById('form-success');
             const error = document.getElementById('form-error');
             
-            // Ocultar todos los estados
+            // Ocultar mensajes previos
             loading.style.display = 'none';
             success.style.display = 'none';
             error.style.display = 'none';
             
-            // Mostrar carga
+            // Validación adicional para móviles
+            const telefono = document.getElementById('telefono').value.trim();
+            if (!/^[\d]{7,15}$/.test(telefono)) {
+                error.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Por favor ingresa un número válido (7-15 dígitos)';
+                error.style.display = 'block';
+                return;
+            }
+            
+            // Mostrar estado de carga
             submitBtn.disabled = true;
             loading.style.display = 'block';
             
-            // Recolectar datos del formulario
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => data[key] = value);
-            
-            // Enviar datos usando FormSubmit
-            fetch('https://formsubmit.co/ajax/swacenergerarlon@gmail.com', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: data.nombre,
-                    phone: data.telefono,
-                    source: data.fuente,
-                    discount: data.descuento,
+            try {
+                // Configuración para FormSubmit
+                const formData = {
+                    name: form.nombre.value,
+                    phone: form.telefono.value,
+                    source: form.fuente.value,
+                    discount: form.descuento.value,
                     _subject: 'Nuevo lead FlexDol - 50% descuento',
                     _template: 'table',
-                    _captcha: 'false'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
+                    _captcha: 'false',
+                    _access_key: form.access_key.value
+                };
+                
+                // Enviar usando FormSubmit
+                const response = await fetch('https://formsubmit.co/ajax/swacenergerarlon@gmail.com', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
                     // Mostrar éxito
                     loading.style.display = 'none';
                     success.style.display = 'block';
                     form.reset();
                     
-                    // Opcional: Redirigir después de 3 segundos
+                    // Redirigir después de 3 segundos (opcional)
                     setTimeout(() => {
                         window.location.href = "gracias.html";
                     }, 3000);
                 } else {
-                    throw new Error('Error en el envío');
+                    throw new Error('Error en el servidor');
                 }
-            })
-            .catch(err => {
-                loading.style.display = 'none';
-                error.style.display = 'block';
+            } catch (err) {
                 console.error('Error:', err);
-            })
-            .finally(() => {
+                loading.style.display = 'none';
+                error.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error de conexión. Por favor intenta más tarde.';
+                error.style.display = 'block';
+            } finally {
                 submitBtn.disabled = false;
-            });
+            }
         });
+
+        // Mejorar experiencia en móviles
+        if (/Mobi|Android/i.test(navigator.userAgent)) {
+            // Ajustes específicos para móviles
+            document.getElementById('telefono').addEventListener('focus', function() {
+                window.scrollTo(0, this.offsetTop - 100);
+            });
+        }
     </script>
 </body>
 </html>
